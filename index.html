@@ -230,6 +230,7 @@ button.secondary:hover { background: #fdf8f2; border-color: #a07850; }
 
 <script>
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB4hBYSkXpo1bmVb4c2__UcKEz6_h4xa5AAHq9Hdtv-2kjUsjKPJzbaVjzgzC4duNfPw/exec';
+var SECRET_TOKEN = 'CINCO_SECRET_2026';
 
 var cart = {};
 var currentPayment = '';
@@ -243,6 +244,14 @@ var logoUrl = null;
 window.addEventListener('load', function() {
   loadMenu();
 });
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 function loadMenu() {
   document.getElementById('loadingOverlay').classList.add('active');
@@ -275,7 +284,7 @@ function renderLogo(url) {
   document.getElementById('logoArea').innerHTML =
     '<div style="text-align:center;">' +
       '<div style="display:inline-flex; align-items:center; justify-content:center; gap:16px;">' +
-        '<img src="' + url + '" alt="Cinco Bakes" style="width:clamp(50px,8vw,80px); height:clamp(50px,8vw,80px); object-fit:contain; flex-shrink:0;" />' +
+        '<img src="' + escapeHTML(url) + '" alt="Cinco Bakes" style="width:clamp(50px,8vw,80px); height:clamp(50px,8vw,80px); object-fit:contain; flex-shrink:0;" />' +
         '<div style="font-family:Montserrat,sans-serif; font-size:clamp(28px,6vw,56px); font-weight:700; color:#442523; letter-spacing:1px; line-height:1;">Cinco Bakes</div>' +
       '</div>' +
       '<div style="font-family:Montserrat,sans-serif; font-size:clamp(14px,2.5vw,30px); letter-spacing:clamp(2px,0.5vw,4px); color:#a07850; text-transform:uppercase; margin-top:6px; font-weight:500;">Cookie Order Form</div>' +
@@ -291,17 +300,17 @@ function renderCookies(cookies) {
       : '₱' + c.price.toLocaleString() + '.00 each';
     var badge = isBox ? '<span class="sale-badge">SALE</span>' : '';
     var safeId = c.name.replace(/\s+/g, '');
-    var imgHTML = c.imageUrl ? '<img src="' + c.imageUrl + '" alt="' + c.name + '" class="cookie-img" />' : '';
+    var imgHTML = c.imageUrl ? '<img src="' + escapeHTML(c.imageUrl) + '" alt="' + escapeHTML(c.name) + '" class="cookie-img" />' : '';
     html +=
       '<div class="cookie-row">' + imgHTML +
         '<div class="cookie-info">' +
-          '<div class="cookie-name">' + c.name + ' ' + badge + '</div>' +
+          '<div class="cookie-name">' + escapeHTML(c.name) + ' ' + badge + '</div>' +
           '<div class="cookie-price">' + priceDisplay + '</div>' +
         '</div>' +
         '<div class="stepper">' +
-          '<button type="button" onclick="change(\'' + c.name + '\', ' + c.price + ', -1)">−</button>' +
+          '<button type="button" onclick="change(\'' + escapeHTML(c.name) + '\', ' + c.price + ', -1)">−</button>' +
           '<span class="qty" id="qty-' + safeId + '">0</span>' +
-          '<button type="button" onclick="change(\'' + c.name + '\', ' + c.price + ', 1)">+</button>' +
+          '<button type="button" onclick="change(\'' + escapeHTML(c.name) + '\', ' + c.price + ', 1)">+</button>' +
         '</div>' +
       '</div>';
   });
@@ -478,7 +487,7 @@ function buildFinalSummary() {
   var itemsHTML = '';
   ordered.forEach(function(e) {
     var sub = e[1].qty * e[1].price;
-    itemsHTML += '<div class="summary-item">• ' + e[0] + ' x' + e[1].qty + ' = ₱' + sub.toLocaleString('en-PH') + '</div>';
+    itemsHTML += '<div class="summary-item">• ' + escapeHTML(e[0]) + ' x' + e[1].qty + ' = ₱' + sub.toLocaleString('en-PH') + '</div>';
   });
   document.getElementById('summaryItems').innerHTML = itemsHTML;
   document.getElementById('summarySubtotal').textContent = '₱' + subtotal.toLocaleString('en-PH', { minimumFractionDigits: 2 });
@@ -489,7 +498,7 @@ function buildFinalSummary() {
     document.getElementById('gcashAmount').textContent = 'Amount: ₱' + total.toLocaleString('en-PH', { minimumFractionDigits: 2 }) + (deliveryFeeKnown ? '' : ' + delivery fee');
     var qrContainer = document.getElementById('gcashQrContainer');
     if (gcashQrUrl) {
-      qrContainer.innerHTML = '<img src="' + gcashQrUrl + '" alt="GCash QR Code" style="width:min(520px,85vw); height:min(520px,85vw); object-fit:contain; display:block; margin:0 auto;" />';
+      qrContainer.innerHTML = '<img src="' + escapeHTML(gcashQrUrl) + '" alt="GCash QR Code" style="width:min(520px,85vw); height:min(520px,85vw); object-fit:contain; display:block; margin:0 auto;" />';
     } else {
       qrContainer.innerHTML = '<div style="text-align:center; color:#a07850; font-size:18px;">QR Code not available</div>';
     }
@@ -524,6 +533,7 @@ function submitOrder() {
     return { name: e[0], qty: e[1].qty, price: e[1].price };
   });
   var payload = {
+    token: SECRET_TOKEN,
     fullName: fullName,
     instagram: instagram,
     modeOfPayment: modeOfPayment,
