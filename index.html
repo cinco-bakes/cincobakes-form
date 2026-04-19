@@ -255,10 +255,28 @@ function escapeHTML(str) {
 }
 
 function loadMenu() {
-  document.getElementById('loadingOverlay').classList.add('active');
+  var cached = localStorage.getItem('cincoMenu');
+
+  if (cached) {
+    try {
+      var data = JSON.parse(cached);
+      menuData = data.cookies || [];
+      gcashQrUrl = data.gcashQrUrl || null;
+      logoUrl = data.logoUrl || null;
+      renderLogo(logoUrl);
+      renderCookies(menuData);
+      document.getElementById('loadingOverlay').classList.remove('active');
+    } catch(e) {
+      localStorage.removeItem('cincoMenu');
+    }
+  } else {
+    document.getElementById('loadingOverlay').classList.add('active');
+  }
+
   fetch(APPS_SCRIPT_URL + '?type=menu')
     .then(function(res) { return res.json(); })
     .then(function(data) {
+      localStorage.setItem('cincoMenu', JSON.stringify(data));
       menuData = data.cookies || [];
       gcashQrUrl = data.gcashQrUrl || null;
       logoUrl = data.logoUrl || null;
@@ -267,16 +285,18 @@ function loadMenu() {
       document.getElementById('loadingOverlay').classList.remove('active');
     })
     .catch(function() {
-      menuData = [
-        { name: 'OG Choco Chip', price: 75, imageUrl: null },
-        { name: '2D Chocolate', price: 85, imageUrl: null },
-        { name: 'Rocky Red', price: 95, imageUrl: null },
-        { name: 'Nutty Boi', price: 95, imageUrl: null },
-        { name: 'Matcha Créme', price: 105, imageUrl: null },
-        { name: 'Assorted Box of 5', price: 415, imageUrl: null }
-      ];
-      renderCookies(menuData);
-      document.getElementById('loadingOverlay').classList.remove('active');
+      if (!cached) {
+        menuData = [
+          { name: 'OG Choco Chip', price: 75, imageUrl: null },
+          { name: '2D Chocolate', price: 85, imageUrl: null },
+          { name: 'Rocky Red', price: 95, imageUrl: null },
+          { name: 'Nutty Boi', price: 95, imageUrl: null },
+          { name: 'Matcha Créme', price: 105, imageUrl: null },
+          { name: 'Assorted Box of 5', price: 415, imageUrl: null }
+        ];
+        renderCookies(menuData);
+        document.getElementById('loadingOverlay').classList.remove('active');
+      }
     });
 }
 
