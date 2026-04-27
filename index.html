@@ -113,14 +113,14 @@ button.secondary:hover { background: #fdf8f2; border-color: #a07850; }
   <div class="page active" id="page1">
     <div class="section-title">Your Details</div>
     <div class="field">
-      <label>Full Name</label>
+      <label>Name</label>
       <input type="text" id="fullName" placeholder="e.g. Juan Dela Cruz" />
-      <div class="field-error" id="nameError">Please enter your full name.</div>
+      <div class="field-error" id="nameError">Please enter your name.</div>
     </div>
     <div class="field">
-      <label>Instagram Handle</label>
+      <label>Instagram Username</label>
       <input type="text" id="instagram" placeholder="e.g. @juandelacruz" />
-      <div class="field-error" id="instagramError">Please enter your Instagram handle.</div>
+      <div class="field-error" id="instagramError">Please enter your Instagram username.</div>
     </div>
     <div class="section-title" style="margin-top:1.5rem;">Choose Your Cookies</div>
     <div class="cookie-list" id="cookieList">
@@ -150,9 +150,9 @@ button.secondary:hover { background: #fdf8f2; border-color: #a07850; }
       <label>Delivery Area</label>
       <select id="deliveryArea" onchange="onDeliveryAreaChange(this.value)">
         <option value="">Select your delivery area</option>
-        <option value="Calamba">Calamba — +₱25.00 delivery fee</option>
+        <option value="Calamba">Calamba — ₱25.00 delivery fee</option>
         <option value="Los Baños">Los Baños — Free delivery</option>
-        <option value="Bay">Bay — +₱15.00 delivery fee</option>
+        <option value="Bay">Bay — ₱15.00 delivery fee</option>
         <option value="Others">Others — Specify your location</option>
       </select>
       <div class="field-error" id="areaError">Please select a delivery area.</div>
@@ -207,7 +207,7 @@ button.secondary:hover { background: #fdf8f2; border-color: #a07850; }
     </div>
     <div class="instagram-note">
       <div class="instagram-note-title">📸 Important Note</div>
-      <div class="instagram-note-text">Please take a screenshot of this page and send it to our Instagram for order confirmation.<br><br>
+      <div class="instagram-note-text">Please take a screenshot of this page and send it to our Instagram below for order confirmation.<br><br>
       <a href="https://www.instagram.com/cinco.bakes" target="_blank" class="instagram-note-link">@cinco.bakes</a></div>
     </div>
     <button class="primary" id="submit-btn" onclick="submitOrder()">Place Order</button>
